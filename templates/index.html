@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Super AI Assistant</title>
+  <title>🧠 Super AI Assistant</title>
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(to right, #eef2f7, #d8e1f0);
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #eef2f7, #dde7f5);
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -21,115 +21,141 @@
       padding: 20px;
     }
 
-    .container {
+    .main-card {
+      background: #ffffff;
       width: 100%;
       max-width: 600px;
-      background: #fff;
-      padding: 30px 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border-radius: 25px;
+      padding: 30px 25px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.1);
     }
 
-    h1 {
+    .main-card h1 {
+      font-size: 26px;
       text-align: center;
-      font-size: 28px;
-      color: #333;
       margin-bottom: 25px;
+      color: #333;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 15px;
     }
 
     input[type="text"] {
-      width: 100%;
-      padding: 14px 16px;
-      font-size: 18px;
+      padding: 16px;
+      font-size: 17px;
+      border-radius: 12px;
       border: 2px solid #ccc;
-      border-radius: 10px;
-      margin-bottom: 20px;
+      width: 100%;
       outline: none;
-      transition: border-color 0.3s;
+      transition: 0.3s ease-in-out;
     }
 
     input[type="text"]:focus {
-      border-color: #007bff;
+      border-color: #4a90e2;
     }
 
-    .button-group {
+    .btn-group {
       display: flex;
+      justify-content: space-between;
       gap: 10px;
       flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
     }
 
     button {
       flex: 1;
-      min-width: 120px;
+      background-color: #4a90e2;
+      color: #fff;
       padding: 12px;
       font-size: 16px;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      background-color: #007bff;
-      color: white;
-      transition: background-color 0.3s;
+      transition: background 0.3s ease;
     }
 
     button:hover {
-      background-color: #0056b3;
+      background-color: #3579c5;
     }
 
-    .response, .image-box {
+    .output-section {
       margin-top: 30px;
     }
 
-    .response h3, .image-box h3 {
-      color: #444;
-      font-size: 20px;
-      margin-bottom: 10px;
+    .output-section h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #333;
     }
 
-    .response p {
-      background-color: #f9f9f9;
-      padding: 15px;
+    .output-section p {
+      background: #f2f2f2;
+      padding: 14px;
       border-radius: 10px;
-      line-height: 1.5;
-      white-space: pre-wrap;
       font-size: 16px;
+      color: #222;
+      white-space: pre-wrap;
     }
 
-    img {
+    .output-section img {
       max-width: 100%;
       border-radius: 12px;
       margin-top: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
+
+    @media (max-width: 480px) {
+      .main-card {
+        padding: 20px 15px;
+        border-radius: 15px;
+      }
+
+      .main-card h1 {
+        font-size: 22px;
+      }
+
+      input[type="text"] {
+        font-size: 16px;
+        padding: 12px;
+      }
+
+      button {
+        font-size: 15px;
+        padding: 10px;
+      }
+
+      .output-section h3 {
+        font-size: 16px;
+      }
+
+      .output-section p {
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="main-card">
     <h1>🧠 Super AI Assistant</h1>
     <form method="POST">
-      <input type="text" name="prompt" placeholder="Type your prompt here..." required />
-      <div class="button-group">
-        <button name="action" value="chat">💬 Chat</button>
-        <button name="action" value="image">🎨 Generate Image</button>
+      <input type="text" name="prompt" placeholder="Ask anything like ‘Generate a flying car image’..." required />
+      <div class="btn-group">
+        <button type="submit" name="action" value="chat">💬 Chat</button>
+        <button type="submit" name="action" value="image">🎨 Generate Image</button>
       </div>
     </form>
 
     {% if reply %}
-    <div class="response">
+    <div class="output-section">
       <h3>🤖 Chatbot Response:</h3>
       <p>{{ reply }}</p>
     </div>
     {% endif %}
 
     {% if image %}
-    <div class="image-box">
+    <div class="output-section">
       <h3>🖼️ Generated Image:</h3>
       <img src="{{ image }}" alt="Generated Image" />
     </div>
