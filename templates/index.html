@@ -1,49 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Super AI Assistant</title>
   <style>
     body {
-      font-family: Arial;
-      text-align: center;
-      background: #f0f0f5;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to right, #f0f4f8, #d9e4f5);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
       padding: 30px;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
     }
-    input {
-      width: 60%;
-      padding: 10px;
-      font-size: 16px;
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #333;
     }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      max-width: 500px;
+      padding: 12px 16px;
+      font-size: 18px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #007bff;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
     button {
-      padding: 10px 20px;
-      margin: 10px;
+      padding: 12px 24px;
       font-size: 16px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s;
     }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .response, .image-box {
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    .response h3, .image-box h3 {
+      color: #444;
+    }
+
+    .response p {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
     img {
-      margin-top: 20px;
-      border-radius: 10px;
-      max-width: 400px;
+      max-width: 100%;
+      border-radius: 12px;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+      }
+
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>🧠 Super AI Assistant</h1>
-  <form method="POST">
-    <input type="text" name="prompt" placeholder="Type your prompt..." required />
-    <br><br>
-    <button name="action" value="chat">💬 Chat</button>
-    <button name="action" value="image">🎨 Generate Image</button>
-  </form>
+  <div class="container">
+    <h1>🧠 Super AI Assistant</h1>
+    <form method="POST">
+      <input type="text" name="prompt" placeholder="Type something like 'Generate an image of a flying car' or 'What is AI?'" required />
+      <div class="button-group">
+        <button name="action" value="chat">💬 Chat</button>
+        <button name="action" value="image">🎨 Generate Image</button>
+      </div>
+    </form>
 
-  {% if reply %}
-    <h3>Chatbot Response:</h3>
-    <p>{{ reply }}</p>
-  {% endif %}
-  
-  {% if image %}
-    <h3>Generated Image:</h3>
-    <img src="{{ image }}" />
-  {% endif %}
+    {% if reply %}
+    <div class="response">
+      <h3>🤖 Chatbot Response:</h3>
+      <p>{{ reply }}</p>
+    </div>
+    {% endif %}
+
+    {% if image %}
+    <div class="image-box">
+      <h3>🖼️ Generated Image:</h3>
+      <img src="{{ image }}" alt="Generated Image" />
+    </div>
+    {% endif %}
+  </div>
 </body>
 </html>
