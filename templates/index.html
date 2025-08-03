@@ -1,16 +1,10 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🧠 Super AI Assistant</title>
+  <title>💬 Super Chatbot</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #eef2f7, #dde7f5);
@@ -20,146 +14,46 @@
       align-items: center;
       padding: 20px;
     }
-
     .main-card {
-      background: #ffffff;
+      background: #fff;
       width: 100%;
       max-width: 600px;
       border-radius: 25px;
       padding: 30px 25px;
       box-shadow: 0 12px 32px rgba(0,0,0,0.1);
     }
-
-    .main-card h1 {
-      font-size: 26px;
-      text-align: center;
-      margin-bottom: 25px;
-      color: #333;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
+    h1 {text-align:center;margin-bottom:25px;}
     input[type="text"] {
-      padding: 16px;
-      font-size: 17px;
-      border-radius: 12px;
-      border: 2px solid #ccc;
-      width: 100%;
-      outline: none;
-      transition: 0.3s ease-in-out;
+      width: 100%;padding: 12px;font-size: 17px;
+      border-radius: 12px;border: 2px solid #ccc;
+      margin-bottom: 15px;outline:none;
     }
-
-    input[type="text"]:focus {
-      border-color: #4a90e2;
-    }
-
-    .btn-group {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
     button {
-      flex: 1;
-      background-color: #4a90e2;
-      color: #fff;
-      padding: 12px;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s ease;
+      background-color: #4a90e2;color: #fff;
+      padding: 12px;width:100%;
+      font-size: 16px;border: none;
+      border-radius: 10px;cursor:pointer;
     }
-
-    button:hover {
-      background-color: #3579c5;
-    }
-
-    .output-section {
-      margin-top: 30px;
-    }
-
-    .output-section h3 {
-      font-size: 18px;
-      margin-bottom: 8px;
-      color: #333;
-    }
-
-    .output-section p {
-      background: #f2f2f2;
-      padding: 14px;
-      border-radius: 10px;
-      font-size: 16px;
-      color: #222;
-      white-space: pre-wrap;
-    }
-
-    .output-section img {
-      max-width: 100%;
-      border-radius: 12px;
-      margin-top: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    @media (max-width: 480px) {
-      .main-card {
-        padding: 20px 15px;
-        border-radius: 15px;
-      }
-
-      .main-card h1 {
-        font-size: 22px;
-      }
-
-      input[type="text"] {
-        font-size: 16px;
-        padding: 12px;
-      }
-
-      button {
-        font-size: 15px;
-        padding: 10px;
-      }
-
-      .output-section h3 {
-        font-size: 16px;
-      }
-
-      .output-section p {
-        font-size: 15px;
-      }
-    }
+    button:hover {background:#3579c5;}
+    .history {margin-top:20px;}
+    .history p {background:#f2f2f2;padding:8px;border-radius:8px;}
   </style>
 </head>
 <body>
   <div class="main-card">
-    <h1>🧠 Super AI Assistant</h1>
+    <h1>💬 Super Chatbot</h1>
     <form method="POST">
-      <input type="text" name="prompt" placeholder="Ask anything like ‘Generate a flying car image’..." required />
-      <div class="btn-group">
-        <button type="submit" name="action" value="chat">💬 Chat</button>
-        <button type="submit" name="action" value="image">🎨 Generate Image</button>
-      </div>
+      <input type="text" name="prompt" placeholder="Type your message..." required />
+      <button type="submit">Send</button>
     </form>
 
-    {% if reply %}
-    <div class="output-section">
-      <h3>🤖 Chatbot Response:</h3>
-      <p>{{ reply }}</p>
+    <div class="history">
+      {% for chat in history %}
+        <p><b>You:</b> {{ chat.user }}</p>
+        <p><b>Bot:</b> {{ chat.bot }}</p>
+        <hr/>
+      {% endfor %}
     </div>
-    {% endif %}
-
-    {% if image %}
-    <div class="output-section">
-      <h3>🖼️ Generated Image:</h3>
-      <img src="{{ image }}" alt="Generated Image" />
-    </div>
-    {% endif %}
   </div>
 </body>
 </html>
