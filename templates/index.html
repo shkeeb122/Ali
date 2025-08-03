@@ -1,59 +1,68 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>💬 Super Chatbot</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #eef2f7, #dde7f5);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-    .main-card {
-      background: #fff;
-      width: 100%;
-      max-width: 600px;
-      border-radius: 25px;
-      padding: 30px 25px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.1);
-    }
-    h1 {text-align:center;margin-bottom:25px;}
-    input[type="text"] {
-      width: 100%;padding: 12px;font-size: 17px;
-      border-radius: 12px;border: 2px solid #ccc;
-      margin-bottom: 15px;outline:none;
-    }
-    button {
-      background-color: #4a90e2;color: #fff;
-      padding: 12px;width:100%;
-      font-size: 16px;border: none;
-      border-radius: 10px;cursor:pointer;
-    }
-    button:hover {background:#3579c5;}
-    .history {margin-top:20px;}
-    .history p {background:#f2f2f2;padding:8px;border-radius:8px;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <div class="main-card">
-    <h1>💬 Super Chatbot</h1>
-    <form method="POST">
-      <input type="text" name="prompt" placeholder="Type your message..." required />
-      <button type="submit">Send</button>
-    </form>
+    <div class="container">
+        <div class="sidebar">
+            <h2>History</h2>
+            <ul id="history-list">
+                {% for chat in history %}
+                    <li>{{ chat.user }} → {{ chat.bot }}</li>
+                {% endfor %}
+            </ul>
+            <button id="clear-history">Clear History</button>
+        </div>
+        
+        <div class="chat-area">
+            <div id="chat-box">
+                {% for chat in history %}
+                    <div class="user-msg">👤 {{ chat.user }}</div>
+                    <div class="bot-msg">{{ chat.bot }}</div>
+                {% endfor %}
+            </div>
 
-    <div class="history">
-      {% for chat in history %}
-        <p><b>You:</b> {{ chat.user }}</p>
-        <p><b>Bot:</b> {{ chat.bot }}</p>
-        <hr/>
-      {% endfor %}
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Type a message..." />
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
     </div>
-  </div>
+
+<script>
+document.getElementById("send-btn").addEventListener("click", sendMessage);
+document.getElementById("user-input").addEventListener("keypress", function(e){
+    if(e.key==="Enter") sendMessage();
+});
+
+function sendMessage(){
+    let input = document.getElementById("user-input");
+    let msg = input.value.trim();
+    if(!msg) return;
+
+    fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: msg})
+    })
+    .then(res => res.json())
+    .then(data => {
+        let box = document.getElementById("chat-box");
+        box.innerHTML += `<div class='user-msg'>👤 ${msg}</div><div class='bot-msg'>${data.reply}</div>`;
+        input.value = "";
+        box.scrollTop = box.scrollHeight;
+    });
+}
+
+document.getElementById("clear-history").addEventListener("click", function(){
+    fetch("/clear", {method: "POST"})
+    .then(res => res.json())
+    .then(() => location.reload());
+});
+</script>
 </body>
 </html>
