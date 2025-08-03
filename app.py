@@ -1,27 +1,25 @@
-from flask import Flask, request, render_template, jsonify
-import requests
-import os
+from flask import Flask, request, render_template
+import requests, json, os
 
 app = Flask(__name__)
 
-# Chatbot backend (your Render-hosted chatbot endpoint)
+# 🔹 Backend Chatbot Endpoint (Render ya Railway)
 CHAT_URL = "https://umar-y55h.onrender.com/chat"
+HISTORY_FILE = "chat_history.json"
 
-# HuggingFace image model endpoint
-IMAGE_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
-HF_TOKEN = "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"
-HEADERS = {"Authorization": f"Bearer {HF_TOKEN}"}
+# 🔹 Chat history load
+def load_history():
+    if os.path.exists(HISTORY_FILE):
+        with open(HISTORY_FILE, "r") as f:
+            return json.load(f)
+    return []
 
-# 🔷 Generate image from prompt
-def generate_image(prompt):
-    response = requests.post(IMAGE_URL, headers=HEADERS, json={"inputs": prompt})
-    if response.status_code == 200:
-        with open("static/generated.png", "wb") as f:
-            f.write(response.content)
-    else:
-        print("Image generation failed:", response.text)
+# 🔹 Chat history save
+def save_history(history):
+    with open(HISTORY_FILE, "w") as f:
+        json.dump(history, f)
 
-# 🔷 Get chatbot reply
+# 🔹 Get Chatbot reply
 def get_chat_response(prompt):
     try:
         res = requests.post(CHAT_URL, json={"message": prompt})
@@ -29,22 +27,19 @@ def get_chat_response(prompt):
     except:
         return "❌ Chatbot error!"
 
-# 🔷 Main route
 @app.route("/", methods=["GET", "POST"])
 def index():
+    history = load_history()
     reply = ""
-    image = None
+
     if request.method == "POST":
         prompt = request.form.get("prompt")
-        action = request.form.get("action")
-        if action == "chat":
-            reply = get_chat_response(prompt)
-        elif action == "image":
-            generate_image(prompt)
-            image = "static/generated.png"
-    return render_template("index.html", reply=reply, image=image)
+        reply = get_chat_response(prompt)
+        history.append({"user": prompt, "bot": reply})
+        save_history(history)
 
-# 🔷 Render-compatible app run command
+    return render_template("index.html", reply=reply, history=history)
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
