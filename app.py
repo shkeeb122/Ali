@@ -1,44 +1,44 @@
-from flask import Flask, request, render_template
-import requests, json, os
+from flask import Flask, render_template, request, jsonify
+import json, os
 
 app = Flask(__name__)
 
-# 🔹 Backend Chatbot Endpoint (Render ya Railway)
-CHAT_URL = "https://umar-y55h.onrender.com/chat"
 HISTORY_FILE = "chat_history.json"
 
-# 🔹 Chat history load
-def load_history():
-    if os.path.exists(HISTORY_FILE):
-        with open(HISTORY_FILE, "r") as f:
-            return json.load(f)
-    return []
+# Ensure history file exists
+if not os.path.exists(HISTORY_FILE):
+    with open(HISTORY_FILE, "w") as f:
+        json.dump([], f)
 
-# 🔹 Chat history save
+def load_history():
+    with open(HISTORY_FILE, "r") as f:
+        return json.load(f)
+
 def save_history(history):
     with open(HISTORY_FILE, "w") as f:
         json.dump(history, f)
 
-# 🔹 Get Chatbot reply
-def get_chat_response(prompt):
-    try:
-        res = requests.post(CHAT_URL, json={"message": prompt})
-        return res.json().get("reply", "No reply received.")
-    except:
-        return "❌ Chatbot error!"
-
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
 def index():
     history = load_history()
-    reply = ""
+    return render_template("index.html", history=history)
 
-    if request.method == "POST":
-        prompt = request.form.get("prompt")
-        reply = get_chat_response(prompt)
-        history.append({"user": prompt, "bot": reply})
-        save_history(history)
+@app.route("/chat", methods=["POST"])
+def chat():
+    user_message = request.json.get("message", "")
+    history = load_history()
 
-    return render_template("index.html", reply=reply, history=history)
+    # Dummy bot response (replace with your AI if needed)
+    bot_reply = f"🤖 Bot: '{user_message}' ka jawab yeh hai!"
+
+    history.append({"user": user_message, "bot": bot_reply})
+    save_history(history)
+    return jsonify({"reply": bot_reply})
+
+@app.route("/clear", methods=["POST"])
+def clear_history():
+    save_history([])
+    return jsonify({"status": "cleared"})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
