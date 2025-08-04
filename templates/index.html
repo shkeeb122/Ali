@@ -3,37 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Super Chatbot</title>
+  <title>Ultra Chatbot</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="chat-container">
-    
-    <!-- Left Sidebar: History -->
+
+    <!-- Sidebar -->
     <div class="sidebar">
-      <h2>📜 Chat History</h2>
+      <h2>💬 Chat Sessions</h2>
+      <button onclick="createSession()">➕ New Session</button>
       <input type="text" id="search-history" placeholder="Search history...">
-      <ul id="history-list">
-        {% for msg in history %}
-        <li onclick="loadMessage('{{ msg['user'] }}', '{{ msg['bot'] }}')">
-          {{ msg['user'][:25] }}...
-        </li>
+      <ul id="session-list">
+        {% for name, msgs in sessions.items() %}
+        <li onclick="loadSession('{{ name }}')">{{ name }}</li>
         {% endfor %}
       </ul>
-      <button onclick="clearHistory()">🗑 Clear All</button>
     </div>
 
     <!-- Main Chat -->
     <div class="chat-main">
       <div id="chat-box"></div>
+      <div class="controls">
+        <button onclick="downloadSession()">⬇ Download</button>
+        <button onclick="clearSession()">🗑 Clear</button>
+      </div>
       <div class="input-area">
-        <input type="text" id="user-input" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
+        <input type="text" id="user-input" placeholder="Type and Search...">
+        <button onclick="sendMessage()">Search</button>
       </div>
     </div>
 
   </div>
 
+  <script>
+    let currentSession = "default";
+  </script>
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
