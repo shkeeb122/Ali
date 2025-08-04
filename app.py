@@ -28,12 +28,12 @@ def chat():
     user_message = request.json.get("message", "")
     history = load_history()
 
-    # Dummy bot response (replace with your AI if needed)
+    # 🔹 Real bot ka reply yahan connect kar sakte ho
     bot_reply = f"🤖 Bot: '{user_message}' ka jawab yeh hai!"
 
     history.append({"user": user_message, "bot": bot_reply})
     save_history(history)
-    return jsonify({"reply": bot_reply})
+    return jsonify({"reply": bot_reply, "history": history})
 
 @app.route("/clear", methods=["POST"])
 def clear_history():
