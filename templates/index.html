@@ -3,71 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Chatbot with History</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <title>Super Chatbot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="container">
+  <div class="chat-container">
     
-    <!-- Sidebar for History -->
+    <!-- Left Sidebar: History -->
     <div class="sidebar">
-      <h2>History</h2>
-      <button id="clearBtn">Clear History</button>
-      <ul id="historyList">
-        {% for chat in history %}
-        <li>🧑 {{ chat.user }} <br> 🤖 {{ chat.bot }}</li>
+      <h2>📜 Chat History</h2>
+      <input type="text" id="search-history" placeholder="Search history...">
+      <ul id="history-list">
+        {% for msg in history %}
+        <li onclick="loadMessage('{{ msg['user'] }}', '{{ msg['bot'] }}')">
+          {{ msg['user'][:25] }}...
+        </li>
         {% endfor %}
       </ul>
+      <button onclick="clearHistory()">🗑 Clear All</button>
     </div>
 
-    <!-- Chat Section -->
-    <div class="chat-container">
-      <div id="chat-box">
-        {% for chat in history %}
-          <div class="user-msg">🧑 {{ chat.user }}</div>
-          <div class="bot-msg">{{ chat.bot }}</div>
-        {% endfor %}
-      </div>
-      <div class="input-box">
-        <input type="text" id="messageInput" placeholder="Type your message...">
-        <button id="sendBtn">Send</button>
+    <!-- Main Chat -->
+    <div class="chat-main">
+      <div id="chat-box"></div>
+      <div class="input-area">
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
       </div>
     </div>
+
   </div>
 
-<script>
-const sendBtn = document.getElementById("sendBtn");
-const input = document.getElementById("messageInput");
-const chatBox = document.getElementById("chat-box");
-const historyList = document.getElementById("historyList");
-const clearBtn = document.getElementById("clearBtn");
-
-sendBtn.addEventListener("click", async () => {
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = "";
-
-  // Show instantly
-  chatBox.innerHTML += `<div class="user-msg">🧑 ${msg}</div>`;
-
-  const res = await fetch("/chat", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({message: msg})
-  });
-
-  const data = await res.json();
-  chatBox.innerHTML += `<div class="bot-msg">${data.reply}</div>`;
-  
-  // Update history sidebar
-  historyList.innerHTML += `<li>🧑 ${msg} <br> 🤖 ${data.reply}</li>`;
-});
-
-clearBtn.addEventListener("click", async () => {
-  await fetch("/clear", {method: "POST"});
-  chatBox.innerHTML = "";
-  historyList.innerHTML = "";
-});
-</script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
