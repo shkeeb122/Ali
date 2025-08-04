@@ -6,7 +6,6 @@ app = Flask(__name__)
 HISTORY_FILE = "chat_history.json"
 CHATBOT_URL = "https://umar-y55h.onrender.com/chat"  # Tumhara backend
 
-# Ensure history file exists
 if not os.path.exists(HISTORY_FILE):
     with open(HISTORY_FILE, "w") as f:
         json.dump([], f)
@@ -29,17 +28,17 @@ def chat():
     user_message = request.json.get("message", "")
     history = load_history()
 
-    # ✅ Real Chatbot se reply lo
+    # Real chatbot reply
     try:
         res = requests.post(CHATBOT_URL, json={"message": user_message}, timeout=10)
         if res.status_code == 200:
-            bot_reply = res.json().get("reply", "❌ Bot se reply nahi mila")
+            bot_reply = res.json().get("reply", "❌ Bot reply nahi mila")
         else:
             bot_reply = "❌ Bot down ya error"
     except:
         bot_reply = "❌ Backend se connect nahi ho paaya"
 
-    # History update
+    # Save to history
     history.append({"user": user_message, "bot": bot_reply})
     save_history(history)
 
